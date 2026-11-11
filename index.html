@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Registration Form</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+/* BACKGROUND IMAGE SLIDER */
+.slider {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 1s ease-in-out;
+}
+
+.slides img {
+    width: 100%;
+    height: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+/* DARK OVERLAY */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: -1;
+}
+
+/* REGISTRATION FORM */
+.container {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(8px);
+    padding: 30px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+}
+
+h2 {
+    text-align: center;
+    color: #174ea6;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 25px;
+    background: #174ea6;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #103875;
+}
+
+button:disabled {
+    background: gray;
+    cursor: not-allowed;
+}
+
+#message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* IMAGE UPLOAD SECTION */
+.upload-section {
+    margin-top: 20px;
+    padding: 12px;
+    background: #f0f4fa;
+    border-radius: 8px;
+}
+
+.upload-section label {
+    margin-top: 0;
+    color: #174ea6;
+}
+
+.upload-section input {
+    padding: 8px;
+    background: white;
+}
+
+.upload-section button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND IMAGES -->
+<div class="slider">
+    <div class="slides" id="slides">
+
+        <!-- Add as many images as you need -->
+        <img src="img1.jpg" alt="Background 1">
+        <img src="oromo.jpg" alt="Background 2">
+        <img src="tadasa.jpg" alt="Background 3">
+        <img src="after.jpg" alt="Background 4">
+        <img src="im1.jpg" alt="Background 5">
+
+        <img src="mana.webP" alt="Background 6">
+        
+
+    </div>
+</div>
+
+<!-- STUDENT REGISTRATION -->
+<div class="container">
+
+    <h2>Student Registration</h2>
+
+    <form id="registrationForm">
+
+        <label>Full Name</label>
+        <input
+            type="text"
+            name="name"
+            placeholder="Enter your full name"
+            required
+        >
+
+        <label>Age</label>
+        <input
+            type="number"
+            name="age"
+            placeholder="Enter your age"
+            min="1"
+            max="120"
+            required
+        >
+
+        <label>Gender</label>
+        <select name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">
+                Prefer not to say
+            </option>
+        </select>
+
+        <label>Phone Number</label>
+        <input
+            type="tel"
+            name="phone"
+            placeholder="Enter phone number"
+            required
+        >
+
+        <button type="submit" id="submitBtn">
+            Register Now
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+    
+
+</div>
+
+<script>
+
+/* ==================================
+   AUTOMATIC BACKGROUND IMAGE SLIDER
+================================== */
+
+const slides = document.getElementById("slides");
+
+let currentIndex = 0;
+let slideTimer = null;
+
+function startSlider() {
+
+    const images = slides.querySelectorAll("img");
+
+    currentIndex = 0;
+
+    slides.style.transform = "translateX(0)";
+
+    if (slideTimer) {
+        clearInterval(slideTimer);
+    }
+
+    if (images.length <= 1) {
+        return;
+    }
+
+    slideTimer = setInterval(function() {
+
+        currentIndex++;
+
+        if (currentIndex >= images.length) {
+            currentIndex = 0;
+        }
+
+        slides.style.transform =
+            `translateX(-${currentIndex * 100}%)`;
+
+    }, 5000);
+}
+
+// Start slider automatically
+startSlider();
+
+
+/* ==================================
+   SELECT BACKGROUND IMAGES FROM PC
+================================== */
+
+const imageInput =
+    document.getElementById("backgroundImage");
+
+const applyButton =
+    document.getElementById("applyImages");
+
+let currentImageURLs = [];
+
+applyButton.addEventListener("click", function() {
+
+    const files = Array.from(imageInput.files)
+        .filter(file => file.type.startsWith("image/"));
+
+    if (files.length === 0) {
+        alert("Please select at least one image!");
+        return;
+    }
+
+    // Release old image URLs
+    currentImageURLs.forEach(url => {
+        URL.revokeObjectURL(url);
+    });
+
+    currentImageURLs = [];
+
+    // Remove old images
+    slides.innerHTML = "";
+
+    // Add selected images
+    files.forEach(file => {
+
+        const imageURL = URL.createObjectURL(file);
+
+        currentImageURLs.push(imageURL);
+
+        const img = document.createElement("img");
+
+        img.src = imageURL;
+        img.alt = file.name;
+
+        slides.appendChild(img);
+
+    });
+
+    // Restart automatic slider
+    startSlider();
+
+    alert("Background images updated successfully!");
+
+});
+
+
+/* ==================================
+   GOOGLE SHEETS REGISTRATION
+================================== */
+
+const scriptURL =
+"https://script.google.com/macros/s/AKfycbwgt6xeupB6qTZ1PZNqtzLe60VeFQf6TJbriahdsXiF9Q1ulCkRxvVFu_G-Gfpqnvpplw/exec";
+
+const form =
+    document.getElementById("registrationForm");
+
+const message =
+    document.getElementById("message");
+
+const button =
+    document.getElementById("submitBtn");
+
+
+form.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    button.disabled = true;
+    button.textContent = "Submitting...";
+
+    message.textContent = "";
+
+    const formData = new FormData(form);
+
+    const data = new URLSearchParams();
+
+    for (const [key, value] of formData.entries()) {
+        data.append(key, value);
+    }
+
+    try {
+
+        await fetch(scriptURL, {
+            method: "POST",
+            mode: "no-cors",
+            body: data
+        });
+
+        message.style.color = "green";
+
+        message.textContent =
+            "Registration submitted!";
+
+        form.reset();
+
+    } catch (error) {
+
+        message.style.color = "red";
+
+        message.textContent =
+            "Something went wrong. Please try again.";
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent = "Register Now";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
